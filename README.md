@@ -1,0 +1,1 @@
+# admin-ext-media-manager
