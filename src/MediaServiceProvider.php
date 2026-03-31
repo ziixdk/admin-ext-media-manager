@@ -8,7 +8,7 @@ class MediaServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'open-admin-media');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'ziix-admin-media');
 
         MediaManager::boot();
     }
