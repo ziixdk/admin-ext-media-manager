@@ -1,4 +1,4 @@
-@include("open-admin-media::header")
+@include("ziix-admin-ext-media::header")
 
     @if (!empty($list))
         <table class="table table-hover">
@@ -63,5 +63,5 @@
         </table>
     @endif
 
-@include("open-admin-media::footer")
-@include("open-admin-media::_shared")
+@include("ziix-admin-ext-media::footer")
+@include("ziix-admin-ext-media::_shared")

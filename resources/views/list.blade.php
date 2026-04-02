@@ -1,4 +1,4 @@
-@include("open-admin-media::header")
+@include("ziix-admin-ext-media::header")
 
     <ul class="files list clearfix">
 
@@ -50,7 +50,7 @@
             @endforeach
         @endif
     </ul>
-@include("open-admin-media::footer")
-@include("open-admin-media::_shared")
+@include("ziix-admin-ext-media::footer")
+@include("ziix-admin-ext-media::_shared")
 
 

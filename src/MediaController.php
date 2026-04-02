@@ -22,7 +22,7 @@ class MediaController extends Controller
             $manager->select_fn = $fn;
 
             $content->header('Media manager');
-            $content->body(view("admin-ext-media::$view", [
+            $content->body(view("ziix-admin-ext-media::$view", [
                 'list'      => $manager->ls(),
                 'view'      => $view,
                 'nav'       => $manager->navigation(),
