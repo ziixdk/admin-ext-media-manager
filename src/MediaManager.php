@@ -238,7 +238,7 @@ class MediaManager extends Extension
 
     public function formatDirectories($dirs = [])
     {
-        $url = route('media-index', ['path' => '__path__', 'view' => request('view')]);
+        $url = route('media-index', ['path' => '__path__', 'view' => request('view'), 'close' => request('close'), 'select' => request('select'), 'CKEditorFuncNum' => request('CKEditorFuncNum')]);
 
         $preview = "<a href=\"$url\"><span class=\"file-icon text-primary\"><i class=\"icon-folder\"></i></span></a>";
 
@@ -250,7 +250,7 @@ class MediaManager extends Extension
                 'preview'  => str_replace('__path__', $dir, $preview),
                 'isDir'    => true,
                 'size'     => '',
-                'link'     => route('media-index', ['path' => '/'.trim($dir, '/'), 'view' => request('view'), 'select' => request('select'), 'fn' => $this->select_fn]),
+                'link'     => route('media-index', ['path' => '/'.trim($dir, '/'), 'view' => request('view'), 'close' => request('close'), 'select' => request('select'), 'CKEditorFuncNum' => request('CKEditorFuncNum')]),
                 'url'      => $this->storage->url($dir),
                 'time'     => $this->getFileChangeTime($dir),
             ];

@@ -25,7 +25,7 @@
                         @if ($item['isDir'])
                             <span class="btn">&nbsp;</span>
                         @else
-                            <a href="javascript:{{$fn}}('{{ $item['url'] }}','{{ $item['name'] }}');@if ($close) window.close();@endif" class="btn btn-primary">{{ trans('admin.select') }}</a>
+                            <a href="javascript:window.opener.CKEDITOR.tools.callFunction({{$CKEditorFuncNum}},'{{ $item['url'] }}');@if ($close) window.close();@endif" class="btn btn-primary">{{ trans('admin.select') }}</a>
                         @endif
                     @else
                     <div class="btn-group btn-group-sm float-end">

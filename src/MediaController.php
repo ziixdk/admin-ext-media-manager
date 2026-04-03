@@ -11,25 +11,26 @@ class MediaController extends Controller
 {
     public function index(Request $request)
     {
+
         return Admin::content(function (Content $content) use ($request) {
             $path = $request->get('path', '/');
             $view = $request->get('view', 'table');
             $select = $request->get('select', false);
             $close = $request->get('close', false);
-            $fn = $request->get('fn', 'selectFile');
+            $CKEditorFuncNum = $request->get('CKEditorFuncNum', '3');
 
             $manager = new MediaManager($path);
-            $manager->select_fn = $fn;
+            $manager->select_fn = $request->get('CKEditorFuncNum', 3);
 
             $content->header('Media manager');
             $content->body(view("ziix-admin-ext-media::$view", [
-                'list'      => $manager->ls(),
-                'view'      => $view,
-                'nav'       => $manager->navigation(),
-                'url'       => $manager->urls(),
-                'close'     => $close,
-                'select'    => $select,
-                'fn'        => $fn,
+                'list' => $manager->ls(),
+                'view' => $view,
+                'nav' => $manager->navigation(),
+                'url' => $manager->urls(),
+                'close' => $close,
+                'select' => $select,
+                'CKEditorFuncNum' => $CKEditorFuncNum,
             ]));
 
             if ($select) {
@@ -73,13 +74,13 @@ class MediaController extends Controller
         try {
             if ($manager->delete($files)) {
                 return response()->json([
-                    'status'  => true,
+                    'status' => true,
                     'message' => trans('admin.delete_succeeded'),
                 ]);
             }
         } catch (\Exception $e) {
             return response()->json([
-                'status'  => true,
+                'status' => true,
                 'message' => $e->getMessage(),
             ]);
         }
@@ -95,13 +96,13 @@ class MediaController extends Controller
         try {
             if ($manager->move($new)) {
                 return response()->json([
-                    'status'  => true,
+                    'status' => true,
                     'message' => trans('admin.move_succeeded'),
                 ]);
             }
         } catch (\Exception $e) {
             return response()->json([
-                'status'  => true,
+                'status' => true,
                 'message' => $e->getMessage(),
             ]);
         }
@@ -117,13 +118,13 @@ class MediaController extends Controller
         try {
             if ($manager->newFolder($name)) {
                 return response()->json([
-                    'status'  => true,
+                    'status' => true,
                     'message' => trans('admin.move_succeeded'),
                 ]);
             }
         } catch (\Exception $e) {
             return response()->json([
-                'status'  => true,
+                'status' => true,
                 'message' => $e->getMessage(),
             ]);
         }
