@@ -5,6 +5,9 @@ namespace ZiiX\Admin\Media;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Drivers\Imagick\Driver as ImagickDriver;
+use Intervention\Image\Drivers\Gd\Driver as GdDriver;
+use Intervention\Image\ImageManager;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Local\LocalFilesystemAdapter;
 use ZiiX\Admin\Exception\Handler;
@@ -33,6 +36,13 @@ class MediaManager extends Extension
      * @var
      */
     protected $adapter;
+
+    /**
+     * List of allowed extensions.
+     *
+     * @var string
+     */
+    protected $allowed = [];
 
     /**
      * @var bool
@@ -68,6 +78,10 @@ class MediaManager extends Extension
     {
         $this->path = $path;
         $this->v    = 8;
+
+        if (!empty(static::config('allowed_ext'))) {
+            $this->allowed = explode(',', static::config('allowed_ext'));
+        }
 
         $this->initStorage();
     }
@@ -116,6 +130,9 @@ class MediaManager extends Extension
         $files = $this->storage->files($this->path);
 
         $directories = $this->storage->directories($this->path);
+
+        usort($directories, 'strnatcasecmp');
+        usort($files, 'strnatcasecmp');
 
         return $this->formatDirectories($directories)
             ->merge($this->formatFiles($files))
@@ -182,7 +199,38 @@ class MediaManager extends Extension
     public function upload($files = [])
     {
         foreach ($files as $file) {
+            if ($this->allowed && !in_array(strtolower($file->getClientOriginalExtension()), $this->allowed)) {
+                throw new \Exception('File extension '.$file->getClientOriginalExtension().' is not allowed');
+            }
+
+            $config_compress = static::config("compress");
+            $config_enable = $config_compress['enable'] ?? false;
+
             $this->storage->putFileAs($this->path, $file, $file->getClientOriginalName());
+
+            if($config_enable){
+                $config_max_width = $config_compress['max_width'] ?? 0;
+                $config_driver = $config_compress['driver'] ?? 'gd';
+                $config_quality = $config_compress['quality'] ?? 50;
+
+                if($config_max_width > 0 && in_array(strtolower($file->getClientOriginalExtension()), ['jpg','jpeg','png','gif'])){
+                    if($config_driver == 'imagick') {
+                        $driver = ImageManager::imagick();
+                        $manager = ImageManager::imagick();
+                    }else{
+                        $driver = ImageManager::gd();
+                        $manager = ImageManager::gd();
+                    }
+                    $width = $driver->read($this->storage->get($this->path.'/'.$file->getClientOriginalName()))->width();
+
+                    if($width > $config_max_width) {
+                        $file = $this->path.'/'.$file->getClientOriginalName();
+                        $image = $this->storage->get($file);
+                        $this->storage->put($file, $manager->read($image)->scale(width: $config_max_width)->toJpeg($config_quality));
+                    }
+                }
+            }
+
         }
 
         return true;

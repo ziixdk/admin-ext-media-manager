@@ -32,9 +32,16 @@ Add a disk config in `config/admin.php`:
     'extensions' => [
 
         'media-manager' => [
-
-            // Select a local disk that you configured in `config/filesystem.php`
-            'disk' => 'public'
+            // Select a local disk that you configured in `config/filesystem.php`
+            'disk' => 'public'
+            // Enable compression of images with intervention/image
+            'compress' => [
+                'enable' => true,
+                'max-width' => 1920,
+                'quality' => 90,
+                'driver' => "imagick",
+            ],
+            'allowed_ext' => 'svg,jpg,jpeg,png,pdf,doc,docx,zip,xlsx,xls'    
         ],
     ],
 
